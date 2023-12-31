@@ -1,0 +1,7 @@
+.vs
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/settings.json
+**/bin
+**/obj
+Win32HotkeyListener.csproj.user
