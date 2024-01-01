@@ -14,6 +14,8 @@ namespace Win32HotkeyListener {
 
         public static string ReplaceEnvVars(this string s) => Environment.ExpandEnvironmentVariables(s);
 
+        public static string RemoveSuffix(this string s, string suffix) => s.EndsWith(suffix) ? s.Substring(0, s.Length - suffix.Length) : s;
+
         public static List<T> Coalesce<T>(this List<T> baseValues, T fallback) => baseValues == null || baseValues.Count == 0 ? new List<T> { fallback } : baseValues;
     }
 

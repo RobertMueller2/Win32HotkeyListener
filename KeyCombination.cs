@@ -18,25 +18,34 @@ namespace Win32HotkeyListener {
         [XmlElement("Key")]
         public Key Key { get; set; }
 
+        private List<string> _modifiers = new List<string>();
         /// <summary>
         /// The modifiers of the combination.
+        /// 
         /// </summary>
         [XmlElement("Modifier")]
-        public List<string> Modifiers { get; set; }
+        public List<string> Modifiers { 
+            get => _modifiers;
+            set {
+                ModifierComboFromList(value); // should throw exception if invalid
+                _modifiers = value;
+            }
+        }
 
         /// <summary>
         /// Return modifier keycode as uint.
         /// </summary>
         [XmlIgnore]
         public uint ModifierCombo {
-            get {
-                uint mod = (uint)ModifierKeys.NONE;
-                foreach (var modifier in Modifiers) {
-                    mod += (uint)Enum.Parse(typeof(ModifierKeys), modifier, true);
-                }
-                return mod;
+            get => ModifierComboFromList(Modifiers);
+        }
 
+        public static uint ModifierComboFromList(List<string> modifiers) {
+            uint mod = (uint)ModifierKeys.NONE;
+            foreach (var modifier in modifiers) {
+                mod += (uint)Enum.Parse(typeof(ModifierKeys), modifier, true);
             }
+            return mod;
         }
 
         /// <summary>
