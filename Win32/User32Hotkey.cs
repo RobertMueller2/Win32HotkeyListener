@@ -23,12 +23,11 @@ namespace Win32HotkeyListener.Win32 {
             this.Id = id;
 
             if (!RegisterHotKey(IntPtr.Zero, checked((int)id), modifiers, keycode)) {
-                //TODO: this is not ideal.
-                Console.WriteLine("Warning: Key already registered. {0:X}|{1:X}", ((ModifierKeys)modifiers).ToString(), ((Keys)keycode).ToString());
+                Logger.GetInstance().WriteLine("Warning: Key already registered. {0:X}|{1:X}", ((ModifierKeys)modifiers).ToString(), ((Keys)keycode).ToString());
                 return;
             }
 
-            Console.WriteLine("Registered id {0:X}|modifier {1:X}|keycode {2:X}", id, ((ModifierKeys)modifiers).ToString(), ((Keys)keycode).ToString());
+            Logger.GetInstance().WriteLine("Registered id {0:X}|modifier {1:X}|keycode {2:X}", id, ((ModifierKeys)modifiers).ToString(), ((Keys)keycode).ToString());
             Initialised = true;
         }
 

@@ -14,7 +14,7 @@ namespace Win32HotkeyListener {
         private readonly Logger logger;
         private BackgroundWorker worker;
 
-        private ConcurrentDictionary<uint, (BaseHotkey, User32Hotkey)> FinalHotkeys = new ConcurrentDictionary<uint, (BaseHotkey, User32Hotkey)>();
+        private ConcurrentDictionary<uint, BaseHotkey> FinalHotkeys = new ConcurrentDictionary<uint, BaseHotkey>();
 
         public IEnumerable<BaseHotkey> Hotkeys { get; set; }
         public bool Running { get; set; } = false;
@@ -34,32 +34,23 @@ namespace Win32HotkeyListener {
         private void RegisterHotkeys() {
             uint i = 0;
             uint e = 0;
+
             foreach (var h in Hotkeys) {
-
-                var kc = h.KeyCombo;
-                var uh = new User32Hotkey(i, kc.ModifierCombo, kc.Key.Keycode);
-
-                if (!uh.Initialised) {
-                    e++;
-                    uh.Dispose();
-                    continue;
-                }
-
-                if (FinalHotkeys.TryAdd(i, (h, uh))) {
+                if (h.TryRegister(i) && FinalHotkeys.TryAdd(i, h)) {
                     i++;
-                    h.Registered = true;
-                }
-                else {
-                    e++; // this should never happen
+                } else {
+                    // there is no specific indication what exactly failed, but TryAdd failure is very unlikely
+                    e++;
                 }
             }
+
             logger.Log(string.Format("Registered {0} hotkeys, {1} errors", i, e), MessageType.Info, PresentationType.ToolTip);
         }
 
         private void UnregisterHotkeys() {
             logger.Log("Unregistering hotkeys", MessageType.Debug, PresentationType.None);
             foreach (var h in FinalHotkeys) {
-                h.Value.Item2.Dispose();
+                h.Value.Unregister();
                 FinalHotkeys.TryRemove(h.Key, out _);
             }
             logger.Log("Unregistered hotkeys", MessageType.Debug, PresentationType.None);
@@ -103,8 +94,7 @@ namespace Win32HotkeyListener {
 
                     logger.Log(string.Format("Message {0:X}, Hotkey: {1:X}", message.message, message.wParam.ToInt32()), MessageType.Debug, PresentationType.None);
 
-                    var hotkey = FinalHotkeys[(uint)message.wParam.ToInt32()].Item1;
-
+                    var hotkey = FinalHotkeys[(uint)message.wParam.ToInt32()];
                     if (!hotkey.Enabled) {
                         logger.Log(string.Format("Hotkey disabled", hotkey.ToString()), MessageType.Debug, PresentationType.None);
                         continue;
