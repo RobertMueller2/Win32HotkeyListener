@@ -11,6 +11,10 @@ namespace Win32HotkeyListener {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Overridden ToString method for use in logging.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString() {
             return this.GetType().Name;
         }
