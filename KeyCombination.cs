@@ -35,5 +35,5 @@ namespace Win32HotkeyListener {
 
         public override string ToString() => $"{string.Join("+", Modifiers).Coalesce("")}+{Key.KeyStr.ToString()}";
     }
-    
+
 }

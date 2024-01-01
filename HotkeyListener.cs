@@ -2,36 +2,14 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Interop;
 using Win32HotkeyListener.Win32;
+using static Win32HotkeyListener.Win32.User32MessageFunctions;
 
 namespace Win32HotkeyListener {
 
     public class HotkeyListener {
-
-        private enum MsgType : int {
-            WM_QUIT = 0x0012,
-            WM_HOTKEY = 0x0312
-        };
-
-        //FIXME: Wrap this in a managed method and move this to User32Hotkey.cs
-        [DllImport("user32.dll")]
-        private static extern int GetMessageA(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool PeekMessageA(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
-
-        /*
-        // need this to have a thread id for PostThreadMessage
-        [DllImport("kernel32.dll")]
-        static extern uint GetCurrentThreadId();
-        */
-
-        [DllImport("user32.dll")]
-        private static extern bool PostThreadMessage(int idThread, uint Msg, IntPtr wParam, IntPtr lParam);
 
         private readonly Logger logger;
         private BackgroundWorker worker;
@@ -44,7 +22,7 @@ namespace Win32HotkeyListener {
         public delegate void HotkeyListenerCallback();
 
         public HotkeyListenerCallback OnCompleted { get; set; }
-        
+
 
         public HotkeyListener(IEnumerable<BaseHotkey> hotkeys) {
 
@@ -111,7 +89,7 @@ namespace Win32HotkeyListener {
 
             while (!worker.CancellationPending) {
                 //TODO: consider filtering
-                if (PeekMessageA(out MSG message, IntPtr.Zero, 0, 0, 0x0001)) {
+                if (User32MessageFunctions.PeekMessageA(out MSG message, IntPtr.Zero, 0, 0, 0x0001)) {
 
                     if (message.message == (int)MsgType.WM_QUIT) {
                         logger.Log("Received WM_QUIT", MessageType.Debug, PresentationType.None);
