@@ -15,10 +15,10 @@ namespace Win32HotkeyListener {
             MOD_NOREPEAT = 0x4000
         }
 
-        [XmlIgnore]
+        [XmlElement("Key")]
         public Key Key { get; set; }
 
-        [XmlIgnore]
+        [XmlElement("Modifier")]
         public List<string> Modifiers { get; set; }
 
         [XmlIgnore]

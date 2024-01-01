@@ -15,7 +15,7 @@ namespace Win32HotkeyListener {
             }
         }
 
-        [XmlIgnore]
+        [XmlText]
         public string KeyStr {
             get {
                 return WFKey.ToString();

@@ -3,7 +3,6 @@
 namespace Win32HotkeyListener {
     public class BaseAction {
 
-
         /// <summary>
         /// executes the given action
         /// </summary>
@@ -15,7 +14,6 @@ namespace Win32HotkeyListener {
         public override string ToString() {
             return this.GetType().Name;
         }
-
 
     }
 }

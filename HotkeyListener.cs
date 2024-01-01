@@ -36,9 +36,9 @@ namespace Win32HotkeyListener {
         private readonly Logger logger;
         private BackgroundWorker worker;
 
-        private ConcurrentDictionary<uint, (IHotkey, User32Hotkey)> FinalHotkeys = new ConcurrentDictionary<uint, (IHotkey, User32Hotkey)>();
+        private ConcurrentDictionary<uint, (BaseHotkey, User32Hotkey)> FinalHotkeys = new ConcurrentDictionary<uint, (BaseHotkey, User32Hotkey)>();
 
-        public IEnumerable<IHotkey> Hotkeys { get; set; }
+        public IEnumerable<BaseHotkey> Hotkeys { get; set; }
         public bool Running { get; set; } = false;
 
         public delegate void HotkeyListenerCallback();
@@ -46,7 +46,7 @@ namespace Win32HotkeyListener {
         public HotkeyListenerCallback OnCompleted { get; set; }
         
 
-        public HotkeyListener(IEnumerable<IHotkey> hotkeys) {
+        public HotkeyListener(IEnumerable<BaseHotkey> hotkeys) {
 
             this.Hotkeys = hotkeys;
             this.logger = Logger.GetInstance();
