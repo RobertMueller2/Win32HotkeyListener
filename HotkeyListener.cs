@@ -24,10 +24,22 @@ namespace Win32HotkeyListener {
         /// </summary>
         public IEnumerable<BaseHotkey> Hotkeys { get; set; }
 
+        private bool _running = false;
         /// <summary>
         /// Whether the listener is running or not.
         /// </summary>
-        public bool Running { get; set; } = false;
+        public bool Running { 
+            get => _running;
+            set {
+                _running = value;
+                RunningChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Event to be executed when the Running property changes.
+        /// </summary>
+        public event EventHandler RunningChanged;
 
         /// <summary>
         /// Delegate definition for the callback to be executed when the BackgroundWorker is done.
@@ -79,6 +91,21 @@ namespace Win32HotkeyListener {
                 IdToHotkey.TryRemove(h.Key, out _);
             }
             logger.Log("Unregistered hotkeys", MessageType.Debug, PresentationType.None);
+        }
+
+        /// <summary>
+        /// Force unregister all hotkeys with the OS. This includes hotkeys that were not successfully registered.
+        /// </summary>
+        public void ForceUnregisterHotkeys() {
+            if (Running) {
+                logger.Log("Force unregistering hotkeys requested but hotkey listener is still running", MessageType.Debug, PresentationType.None);
+                return;
+            }
+            logger.Log("Force unregistering hotkeys", MessageType.Debug, PresentationType.None);
+            foreach (var h in Hotkeys) {
+                h.Unregister();
+            }
+            logger.Log("Force unregistered hotkeys", MessageType.Debug, PresentationType.None);
         }
 
         /// <summary>
