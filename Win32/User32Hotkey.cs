@@ -68,7 +68,7 @@ namespace Win32HotkeyListener.Win32 {
             this.Id = id;
 
             if (!RegisterHotKey(IntPtr.Zero, checked((int)id), modifiers, keycode)) {
-                Logger.GetInstance().WriteLine("Warning: Key already registered. {0:X}|{1:X}", ((ModifierKeys)modifiers).ToString(), ((Keys)keycode).ToString());
+                Logger.GetInstance().WriteLine("Warning: Key already registered. {0:X}|{1:X}|Win32Error: {2:x}", ((ModifierKeys)modifiers).ToString(), ((Keys)keycode).ToString(), Marshal.GetLastWin32Error());
                 return;
             }
 
