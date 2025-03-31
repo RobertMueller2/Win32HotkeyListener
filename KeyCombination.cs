@@ -14,7 +14,7 @@ namespace Win32HotkeyListener {
         /// The key of the combination.
         /// </summary>
         [XmlElement("Key")]
-        public Key Key { get; set; }
+        public Key? Key { get; set; }
 
         private List<string> _modifiers = new List<string>();
         /// <summary>
@@ -50,7 +50,7 @@ namespace Win32HotkeyListener {
         /// Overridden ToString method for use in logging.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => $"{string.Join("+", Modifiers).Coalesce("")}+{Key.KeyStr.ToString()}";
+        public override string ToString() => $"{string.Join("+", Modifiers).Coalesce("")}+{Key?.KeyStr.ToString()}";
     }
 
 }

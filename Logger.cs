@@ -69,7 +69,7 @@ namespace Win32HotkeyListener {
         /// <summary>
         /// Event that is fired when a new log message is added.
         /// </summary>
-        public event Action<string> LogUpdated;
+        public event Action<string>? LogUpdated;
 
         /// <summary>
         /// sets the maximum number of log messages to be stored in the queue.  If the queue is full, the oldest message will be removed.

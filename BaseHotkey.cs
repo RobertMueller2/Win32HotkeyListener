@@ -12,19 +12,19 @@ namespace Win32HotkeyListener {
         /// Action to be performed when the hotkey is pressed.
         /// </summary>
         [XmlIgnore]
-        public BaseAction Action { get; set; }
+        public BaseAction? Action { get; set; }
 
         /// <summary>
         /// A key combination that triggers the hotkey
         /// </summary>
         [XmlElement("KeyCombination", typeof(KeyCombination))]
-        public KeyCombination KeyCombo { get; set; }
+        public KeyCombination? KeyCombo { get; set; }
 
         /// <summary>
         /// The real hotkey object which represents a hotkey that was registered with the OS.
         /// </summary>
         [XmlIgnore]
-        public User32Hotkey RealHotkey { get; set; }
+        public User32Hotkey? RealHotkey { get; set; }
 
         /// <summary>
         /// Whether the hotkey is enabled or not.
@@ -60,7 +60,7 @@ namespace Win32HotkeyListener {
         /// </summary>
         /// <returns></returns>
         public override string ToString() {
-            return $"{this.GetType().Name} : {KeyCombo.ToString()}";
+            return $"{this.GetType().Name} : {KeyCombo?.ToString()}";
         }
 
         /// <summary>
@@ -68,7 +68,10 @@ namespace Win32HotkeyListener {
         /// </summary>
         /// <param name="id"></param>
         /// <returns>whether registration was successful</returns>
-        internal bool TryRegister(uint id) {
+        internal bool TryRegister(uint id) {            
+            if (KeyCombo == null || KeyCombo.Key == null) {
+                return false;
+            }
             RealHotkey = new User32Hotkey(id, KeyCombo.ModifierCombo, KeyCombo.Key.Keycode);
 
             if (!RealHotkey.Initialised) {
@@ -87,7 +90,7 @@ namespace Win32HotkeyListener {
             if (!Registered) {
                 return;
             }
-            RealHotkey.Dispose();
+            RealHotkey?.Dispose();
         }
     }
 }

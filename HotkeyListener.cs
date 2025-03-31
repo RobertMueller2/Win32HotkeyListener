@@ -12,7 +12,7 @@ namespace Win32HotkeyListener {
     public class HotkeyListener {
 
         private readonly Logger logger;
-        private BackgroundWorker worker;
+        private BackgroundWorker? worker;
 
         private ConcurrentDictionary<uint, BaseHotkey> IdToHotkey = new ConcurrentDictionary<uint, BaseHotkey>();
 
@@ -36,7 +36,7 @@ namespace Win32HotkeyListener {
         /// <summary>
         /// Event to be executed when the Running property changes.
         /// </summary>
-        public event EventHandler RunningChanged;
+        public event EventHandler? RunningChanged;
 
         /// <summary>
         /// Delegate definition for the callback to be executed when the BackgroundWorker is done.
@@ -46,7 +46,7 @@ namespace Win32HotkeyListener {
         /// <summary>
         /// Callback to be executed when the BackgroundWorker is done.
         /// </summary>
-        public HotkeyListenerCallback OnCompleted { get; set; }
+        public HotkeyListenerCallback? OnCompleted { get; set; }
 
         /// <summary>
         /// Constructor for HotkeyListener, takes a list of hotkeys to listen for.
@@ -126,7 +126,7 @@ namespace Win32HotkeyListener {
         /// </summary>
         public void Stop() {
             logger.Log("Cancelling hotkey listener worker", MessageType.Debug, PresentationType.None);
-            worker.CancelAsync();
+            worker?.CancelAsync();
         }
 
         /// <summary>
@@ -137,46 +137,48 @@ namespace Win32HotkeyListener {
         public void Backgroundworker_DoWork(object sender, DoWorkEventArgs e) {
 
             RegisterHotkeys();
+            if (worker != null) {
+                while (!worker.CancellationPending) {
+                    //TODO: consider filtering
+                    if (User32MessageFunctions.PeekMessageA(out MSG message, IntPtr.Zero, 0, 0, 0x0001)) {
 
-            while (!worker.CancellationPending) {
-                //TODO: consider filtering
-                if (User32MessageFunctions.PeekMessageA(out MSG message, IntPtr.Zero, 0, 0, 0x0001)) {
+                        if (message.message == (int)MsgType.WM_QUIT) {
+                            logger.Log("Received WM_QUIT", MessageType.Debug, PresentationType.None);
+                            //break;
+                        }
 
-                    if (message.message == (int)MsgType.WM_QUIT) {
-                        logger.Log("Received WM_QUIT", MessageType.Debug, PresentationType.None);
-                        //break;
+                        //WM_HOTKEY: 786
+                        if (message.message != (int)MsgType.WM_HOTKEY) {
+                            continue;
+                        }
+
+                        logger.Log(string.Format("Message {0:X}, Hotkey: {1:X}", message.message, message.wParam.ToInt32()), MessageType.Debug, PresentationType.None);
+
+                        var hotkey = IdToHotkey[(uint)message.wParam.ToInt32()];
+                        if (!hotkey.Enabled) {
+                            logger.Log(string.Format("Hotkey disabled", hotkey.ToString()), MessageType.Debug, PresentationType.None);
+                            continue;
+                        }
+                        var action = hotkey.Action;
+
+                        logger.Log(string.Format("{0} | Executing {1}", hotkey.ToString(), action?.ToString()), MessageType.Debug, PresentationType.None);
+
+                        var ExecuteMethod = action?.GetType().GetMethod("Execute");
+
+                        try {
+                            if (ExecuteMethod != null) {
+                                ExecuteMethod.Invoke(action, new Object[] { });
+                            }
+                        }
+                        catch (Exception ex) {
+                            logger.Log(string.Format("Error executing action: {0}", ex.Message), MessageType.Error, PresentationType.Popup);
+                        }
                     }
-
-                    //WM_HOTKEY: 786
-                    if (message.message != (int)MsgType.WM_HOTKEY) {
-                        continue;
+                    else {
+                        Thread.Sleep(10);
                     }
-
-                    logger.Log(string.Format("Message {0:X}, Hotkey: {1:X}", message.message, message.wParam.ToInt32()), MessageType.Debug, PresentationType.None);
-
-                    var hotkey = IdToHotkey[(uint)message.wParam.ToInt32()];
-                    if (!hotkey.Enabled) {
-                        logger.Log(string.Format("Hotkey disabled", hotkey.ToString()), MessageType.Debug, PresentationType.None);
-                        continue;
-                    }
-                    var action = hotkey.Action;
-
-                    logger.Log(string.Format("{0} | Executing {1}", hotkey.ToString(), action.ToString()), MessageType.Debug, PresentationType.None);
-
-                    var ExecuteMethod = action.GetType().GetMethod("Execute");
-
-                    try {
-                        ExecuteMethod.Invoke(action, new Object[] { });
-                    }
-                    catch (Exception ex) {
-                        logger.Log(string.Format("Error executing action: {0}", ex.Message), MessageType.Error, PresentationType.Popup);
-                    }
-                }
-                else {
-                    Thread.Sleep(10);
                 }
             }
-
             UnregisterHotkeys();
         }
 
