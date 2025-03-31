@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace Win32HotkeyListener {
 

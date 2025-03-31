@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using System.Windows.Interop;
 using Win32HotkeyListener.Win32;
 using static Win32HotkeyListener.Win32.User32MessageFunctions;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-
-using static Win32HotkeyListener.KeyCombination;
+﻿using System.Runtime.InteropServices;
 
 namespace Win32HotkeyListener.Win32 {
 

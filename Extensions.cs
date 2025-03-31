@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-//TODO: one of these days, this might get its own lib
+﻿//TODO: one of these days, this might get its own lib
 namespace Win32HotkeyListener {
 
     public static class Extensions {

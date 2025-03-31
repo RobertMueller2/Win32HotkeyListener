@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Win32HotkeyListener {
+﻿namespace Win32HotkeyListener {
 
     public enum MessageType {
         Debug,

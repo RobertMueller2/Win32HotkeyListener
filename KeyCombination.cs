@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using static Win32HotkeyListener.Win32.User32Hotkey;
 
 namespace Win32HotkeyListener {

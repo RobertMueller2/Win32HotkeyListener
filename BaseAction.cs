@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Win32HotkeyListener {
+﻿namespace Win32HotkeyListener {
     public class BaseAction {
 
         /// <summary>

@@ -15,6 +15,18 @@ I do not consider the interface stable at this point, so I might just break ever
 
 More explanations TBD.
 
+Standard target is net8.0-windows, this can be changed by including `..\net-version-settings.props`, e.g.:
+
+```
+<Project>
+  <PropertyGroup>
+    <TargetFrameWork>net481</TargetFrameWork>
+  </PropertyGroup>
+</Project>
+```
+
+Please note that the minmum language version needs to be C# 10.0. I've tested building with net8.0-windows and net48, net481. Other versions might or might not work.
+
 Future ideas
 --
 - Right now, the hotkeys are global. If there's a use case for local hotkeys, it's probably easy to do.
