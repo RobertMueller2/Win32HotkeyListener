@@ -134,7 +134,7 @@ namespace Win32HotkeyListener {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void Backgroundworker_DoWork(object sender, DoWorkEventArgs e) {
+        public void Backgroundworker_DoWork(object? sender, DoWorkEventArgs e) {
 
             RegisterHotkeys();
             if (worker != null) {
@@ -187,7 +187,7 @@ namespace Win32HotkeyListener {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void Backgroundworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+        public void Backgroundworker_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e) {
             lock (this) {
                 Running = false;
             }

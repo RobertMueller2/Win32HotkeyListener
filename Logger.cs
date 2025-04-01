@@ -127,15 +127,16 @@ namespace Win32HotkeyListener {
 
             while (logPlaybackQueue.Count > 0) {
                 logPlaybackQueue.TryDequeue(out var msg);
-
-                if (msg.Type == MessageType.Fatal) {
-                    fatalMessages.Add(msg);
-                }
-                else if (msg.Type == MessageType.Error && (msg.Presentation == PresentationType.Popup || msg.Presentation == PresentationType.ToolTip)) {
-                    nonFatalMessages.Add(msg);
-                }
-                else if (msg.Type == MessageType.Info) {
-                    infoMessages.Add(msg);
+                if (msg != null) {
+                    if (msg.Type == MessageType.Fatal) {
+                        fatalMessages.Add(msg);
+                    }
+                    else if (msg.Type == MessageType.Error && (msg.Presentation == PresentationType.Popup || msg.Presentation == PresentationType.ToolTip)) {
+                        nonFatalMessages.Add(msg);
+                    }
+                    else if (msg.Type == MessageType.Info) {
+                        infoMessages.Add(msg);
+                    }
                 }
             }
 
@@ -150,16 +151,16 @@ namespace Win32HotkeyListener {
         /// On the other hand, the <see cref="Log"/> method does that already.
         /// </summary>
         /// <param name="value"></param>
-        public override void Write(string value) {
-            Log(value, MessageType.Debug);
+        public override void Write(string? value) {
+            Log(value ?? "", MessageType.Debug);
         }
 
         /// <summary>
         /// Implements the abstract WriteLine method of TextWriter.
         /// </summary>
         /// <param name="value"></param>
-        public override void WriteLine(string value) {
-            Log(value, MessageType.Debug);
+        public override void WriteLine(string? value) {
+            Log(value ?? "", MessageType.Debug);
         }
 
         /// <summary>
